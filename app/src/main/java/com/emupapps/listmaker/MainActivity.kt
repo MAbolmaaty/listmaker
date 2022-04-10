@@ -1,5 +1,6 @@
 package com.emupapps.listmaker
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
@@ -9,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.emupapps.listmaker.databinding.MainActivityBinding
 import com.emupapps.listmaker.models.TaskList
+import com.emupapps.listmaker.models.TaskList.CREATOR.INTENT_LIST_KEY
+import com.emupapps.listmaker.ui.detail.ListDetailActivity
 import com.emupapps.listmaker.ui.main.MainFragment
 import com.emupapps.listmaker.ui.main.MainViewModel
 import com.emupapps.listmaker.ui.main.MainViewModelFactory
@@ -55,9 +58,17 @@ class MainActivity : AppCompatActivity() {
         builder.setPositiveButton(positiveButtonTitle) {
             dialog, _ -> dialog.dismiss()
 
-            viewModel.saveList(TaskList(listTitleEditText.text.toString()))
+            val taskList = TaskList(listTitleEditText.text.toString())
+            viewModel.saveList(taskList)
+            showListDetail(taskList)
         }
 
         builder.create().show()
+    }
+
+    private fun showListDetail(list: TaskList){
+        val listDetailIntent = Intent(this, ListDetailActivity::class.java)
+        listDetailIntent.putExtra(INTENT_LIST_KEY, list)
+        startActivity(listDetailIntent)
     }
 }
